@@ -4,24 +4,25 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <title>BTD6 Advanced Challenge Solutions</title>
+        <meta name="description" content="Solutions to Bloons Tower Defense 6 advanced challenges">
+        <link rel="alternate" type="application/atom+xml" href="/api" title="Atom feed">
+        <link rel="preload" href="/api" as="fetch" crossorigin="anonymous">
 
         <style>
             :root {
+                --root-bg: white;
                 --bg: #f0f0f0;
                 --fg: #000;
-                --fg-2: #e5e5e5;
-                --skeleton-1: #f0f0f0;
-                --skeleton-2: #e0e0e0;
+                --fg-2: #444;
                 --link: #0077cc;
             }
 
             @media (prefers-color-scheme: dark) {
                 :root {
+                    --root-bg: #121212;
                     --bg: #111;
                     --fg: #fff;
                     --fg-2: #aaa;
-                    --skeleton-1: #222;
-                    --skeleton-2: #333;
                     --link: #92c5f9;
                 }
             }
@@ -32,6 +33,7 @@
             }
 
             body {
+                background-color: var(--root-bg);
                 max-width: 40em;
                 margin: min(10%, 20em) auto;
                 padding: 0 1em;
@@ -43,6 +45,8 @@
 
                 &:hover,
                 &:focus-visible {
+                    border-color: var(--link);
+                    outline: 0.25em solid var(--link);
                     text-decoration: underline;
                 }
             }
@@ -52,7 +56,7 @@
                 padding: 1em;
                 border: 1px solid var(--fg-2);
                 border-radius: 0.5em;
-                opacity: 0.7;
+                opacity: 0.85;
                 color: var(--fg);
 
                 &>h2 {
@@ -65,7 +69,7 @@
 
                 &>time {
                     font-size: 0.8em;
-                    color: #666;
+                    color: var(--fg-2);
                 }
             }
 
@@ -84,6 +88,7 @@
 
                     & article {
                         border-color: var(--link);
+                        outline: 0.25em solid var(--link);
                     }
                 }
             }
@@ -95,20 +100,7 @@
                 margin-top: 1.5em;
             }
 
-            @keyframes loading {
-                from {
-                    background-position: 200% 0;
-                }
-
-                to {
-                    background-position: -200% 0;
-                }
-            }
-
             #skeleton>article * {
-                background: linear-gradient(90deg, var(--skeleton-1), var(--skeleton-2), var(--skeleton-1));
-                background-size: 200% 100%;
-                animation: loading 3s infinite;
                 color: transparent !important;
                 user-select: none;
             }
