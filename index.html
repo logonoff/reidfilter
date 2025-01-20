@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <title>BTD6 Advanced Challenge Solutions</title>
+
+        <style>
+            :root {
+                --bg: #f0f0f0;
+                --fg: #000;
+                --fg-2: #e5e5e5;
+                --skeleton-1: #f0f0f0;
+                --skeleton-2: #e0e0e0;
+                --link: #0077cc;
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --bg: #111;
+                    --fg: #fff;
+                    --fg-2: #aaa;
+                    --skeleton-1: #222;
+                    --skeleton-2: #333;
+                    --link: #92c5f9;
+                }
+            }
+
+            html {
+                color-scheme: light dark;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            }
+
+            body {
+                max-width: 40em;
+                margin: min(10%, 20em) auto;
+                padding: 0 1em;
+            }
+
+            #atom {
+                color: var(--link);
+                text-decoration: none;
+
+                &:hover,
+                &:focus-visible {
+                    text-decoration: underline;
+                }
+            }
+
+            article {
+                margin-bottom: 1em;
+                padding: 1em;
+                border: 1px solid var(--fg-2);
+                border-radius: 0.5em;
+                opacity: 0.7;
+                color: var(--fg);
+
+                &>h2 {
+                    margin: 0 0.5em 0 0;
+                }
+
+                &>p {
+                    margin: 0.5em 0;
+                }
+
+                &>time {
+                    font-size: 0.8em;
+                    color: #666;
+                }
+            }
+
+            a:not(#atom) {
+                text-decoration: none;
+
+                & h2 {
+                    color: var(--link);
+                }
+
+                &:hover,
+                &:focus-visible {
+                    & h2 {
+                        text-decoration: underline;
+                    }
+
+                    & article {
+                        border-color: var(--link);
+                    }
+                }
+            }
+
+            #skeleton article:first-of-type,
+            a:nth-of-type(2) article {
+                border-color: var(--fg);
+                opacity: 1;
+                margin-top: 1.5em;
+            }
+
+            @keyframes loading {
+                from {
+                    background-position: 200% 0;
+                }
+
+                to {
+                    background-position: -200% 0;
+                }
+            }
+
+            #skeleton>article * {
+                background: linear-gradient(90deg, var(--skeleton-1), var(--skeleton-2), var(--skeleton-1));
+                background-size: 200% 100%;
+                animation: loading 3s infinite;
+                color: transparent !important;
+                user-select: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>BTD6 Advanced Challenge Solutions (thanks ethan &lt;3)</h1>
+        <a id="atom" href="/api">View raw atom feed</a>
+        <div id="skeleton" aria-hidden="true">
+            JavaScript must be enabled to view this content unfortunately
+        </div>
+        <template id="entry-template" style="display: none;">
+            <a>
+                <article>
+                    <h2></h2>
+                    <p></p>
+                    <time></time>
+                </article>
+            </a>
+        </template>
+        <template id="skeleton-template" style="display: none;">
+            <article>
+                <h2>Loading loading loading loading loading loading loading</h2>
+                <p>Loading loading loading loading loading loading loading loading loading loading loading loading
+                    loading
+                    loading loading loading loading loading loading loading loading loading loading loading loading
+                    loading
+                    loading loading loading loading loading loading loading loading loading loading loading loading
+                    loading
+                    loading loading</p>
+                <time>Loading loading loading</time>
+            </article>
+        </template>
+
+        <script>
+            window.onload = async () => {
+                // set up loading screen
+                const skeleton = document.getElementById('skeleton');
+                skeleton.innerHTML = '';
+                for (let i = 0; i < 10; i++) {
+                    const clone = document.getElementById('skeleton-template').content.cloneNode(true);
+                    skeleton.appendChild(clone);
+                }
+
+                // do the loading stuff
+                const parser = new DOMParser();
+                const template = document.getElementById('entry-template');
+
+                await fetch('/api')
+                    .then(response => response.text())
+                    .then(text => {
+                        document.getElementById('skeleton').remove();
+
+                        const data = parser.parseFromString(text, 'text/xml');
+
+                        const items = data.querySelectorAll('entry');
+                        items.forEach(item => {
+                            const title = item.querySelector('title').textContent;
+                            const link = item.querySelector('link').getAttribute('href');
+                            const description = item.querySelector('description').textContent;
+                            const pubDate = item.querySelector('published').textContent;
+
+                            const clone = template.content.cloneNode(true);
+                            clone.querySelector('h2').textContent = title;
+                            clone.querySelector('a').href = link;
+                            clone.querySelector('p').textContent = description;
+                            clone.querySelector('time').textContent = new Date(pubDate).toLocaleString();
+                            clone.querySelector('time').setAttribute('datetime', pubDate);
+
+                            document.body.appendChild(clone);
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        const errorElement = document.createElement('article');
+                        errorElement.textContent = 'Failed to load content. Please try again later.';
+
+                        const details = document.createElement('details');
+                        const summary = document.createElement('summary');
+                        summary.textContent = 'Error details';
+                        details.textContent = error.message;
+                        details.appendChild(summary);
+                        errorElement.appendChild(details);
+
+                        document.body.appendChild(errorElement);
+                    });
+            };
+        </script>
+    </body>
+
+</html>
