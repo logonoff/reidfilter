@@ -15,11 +15,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entries := xmlquery.Find(doc, "//entry/title[not(starts-with(text(), '"+os.Getenv("VIDEO_TITLE_PREFIX")+"'))]")
+	link := xmlquery.Find(doc, "//entry/title[starts-with(text(), '"+os.Getenv("VIDEO_TITLE_PREFIX")+"')]")[0].Parent.SelectElements("link")[0].SelectAttr("href")
 
-	for _, entry := range entries {
-		xmlquery.RemoveFromTree(entry.Parent)
-	}
-
-	fmt.Fprint(w, doc.OutputXML(true))
+	// return http 307 with link
+	http.Redirect(w, r, link, http.StatusTemporaryRedirect)
 }
