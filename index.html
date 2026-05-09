@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <title>BTD6 Advanced Challenge Solutions</title>
@@ -143,15 +142,12 @@
 
                         const items = data.querySelectorAll('entry');
                         items.forEach(item => {
-                            const title = item.querySelector('title').textContent;
-                            const link = item.querySelector('link').getAttribute('href');
-                            const description = item.querySelector('description').textContent;
                             const pubDate = item.querySelector('published').textContent;
 
                             const clone = template.content.cloneNode(true);
-                            clone.querySelector('h2').textContent = title;
-                            clone.querySelector('a').href = link;
-                            clone.querySelector('p').textContent = description;
+                            clone.querySelector('h2').textContent = item.querySelector('title').textContent;
+                            clone.querySelector('a').href = item.querySelector('link').getAttribute('href');
+                            clone.querySelector('p').textContent = item.querySelector('description').textContent;
                             clone.querySelector('time').textContent = new Date(pubDate).toLocaleString();
                             clone.querySelector('time').setAttribute('datetime', pubDate);
 
@@ -162,19 +158,15 @@
                         console.error(error);
                         const errorElement = document.createElement('article');
                         errorElement.textContent = 'Failed to load content. Please try again later.';
-
                         const details = document.createElement('details');
                         const summary = document.createElement('summary');
                         summary.textContent = 'Error details';
                         details.textContent = error.message;
                         details.appendChild(summary);
                         errorElement.appendChild(details);
-
                         document.body.appendChild(errorElement);
                     });
             };
         </script>
     </body>
-
 </html>
-
